@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 using TMPro;
 
@@ -17,9 +18,10 @@ public class GameManager : MonoBehaviour
 
     public TMP_InputField input_Name;
     public TMP_InputField input_Content;
-    public GameObject popup;
+    public GameObject popup, txt_Normal, txt_Save;
     public Transform popupImg;
     public TextMeshProUGUI popupTxt;
+    public Button yBtn, nBtn;
 
     [TextArea]
     public string text_Emty;
@@ -27,6 +29,8 @@ public class GameManager : MonoBehaviour
     public string text_Name;
     [TextArea]
     public string text_Submit;
+
+    bool isSavePop;
 
     public void ClickSubmit()
     {
@@ -46,7 +50,7 @@ public class GameManager : MonoBehaviour
             }
             else // 이름이 중복되지 않는다면
             {
-                Save(_name, _content); // 저장
+                StartCoroutine(SavePopOpen()); // 저장확인 팝업창
             }
         }
     }
@@ -56,6 +60,8 @@ public class GameManager : MonoBehaviour
         // 문구, 크기 준비
         popupTxt.text = text;
         popupImg.localScale = Vector3.zero;
+        txt_Normal.SetActive(true);
+        txt_Save.SetActive(false);
         popup.SetActive(true);
 
         float time = 0;
@@ -86,14 +92,53 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    IEnumerator SavePopOpen() // 저장 팝업창 켜기
+    {
+        // 버튼, 크기 준비
+        yBtn.interactable = false;
+        nBtn.interactable = false;
+
+        popupImg.localScale = Vector3.zero;
+        txt_Normal.SetActive(false);
+        txt_Save.SetActive(true);
+        popup.SetActive(true);
+
+        float time = 0;
+        while (time < 1) // 커졌다
+        {
+            time += Time.deltaTime * 2;
+            popupImg.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, time);
+            yield return null;
+        }
+
+        yBtn.interactable = true;
+        nBtn.interactable = true;
+    }
+
+    IEnumerator SavePopClose() // 저장 팝업창 끄기
+    {
+        float time = 0;
+        while (time < 1) // 작아졌다
+        {
+            time += Time.deltaTime * 2;
+            popupImg.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, time);
+            yield return null;
+        }
+
+        popup.SetActive(false);
+    }
+
     bool CheckName(string _name)
     {
         string path = Application.persistentDataPath + "/" + _name + ".json";
         return File.Exists(path);
     }
 
-    void Save(string _name, string _content)
+    public void Save()
     {
+        string _name = input_Name.text;
+        string _content = input_Content.text;
+
         string path = Application.persistentDataPath + "/" + _name + ".json";
 
         data._name = _name;
@@ -103,7 +148,14 @@ public class GameManager : MonoBehaviour
         string saveData = JsonUtility.ToJson(data, true);
         File.WriteAllText(path, saveData);
 
+        isSavePop = false;
+
         // 팝업창
         StartCoroutine(PopUp(text_Submit));
+    }
+
+    public void No()
+    {
+        StartCoroutine(SavePopClose());
     }
 }
