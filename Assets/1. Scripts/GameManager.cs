@@ -32,26 +32,29 @@ public class GameManager : MonoBehaviour
 
     bool isSavePop;
 
+    private void Start()
+    {
+        print(Application.persistentDataPath);
+    }
+
     public void ClickSubmit()
     {
         string _name = input_Name.text;
         string _content = input_Content.text;
 
+        print(_name);
         // 내용물이 비어있으면 취소
         if (_name == null || _name == "" || _content == null || _content == "")
         {
             StartCoroutine(PopUp(text_Emty));
         }
-        else // 비어있지 않다면
+        else if (CheckName(_name)) // 이름이 중복된다면
         {
-            if (CheckName(_name)) // 이름이 중복된다면
-            {
-                StartCoroutine(PopUp(text_Name));
-            }
-            else // 이름이 중복되지 않는다면
-            {
-                StartCoroutine(SavePopOpen()); // 저장확인 팝업창
-            }
+            StartCoroutine(PopUp(text_Name));
+        }
+        else // 이름이 중복되지 않는다면
+        {
+            StartCoroutine(SavePopOpen()); // 저장확인 팝업창
         }
     }
 
