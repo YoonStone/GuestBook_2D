@@ -1,6 +1,6 @@
-# GuestBook_2D
-방명록 게임 (ver.2D)
+# 방명록 (ver.2D)
 
+![방명록2D](https://github.com/YoonStone/GuestBook_2D/assets/101027984/417d3ff3-384d-411b-a888-11d6315b6c36)
 
 2022.09.21
 - 프로젝트 생성
