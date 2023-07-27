@@ -1,4 +1,5 @@
 # 방명록 (ver.2D)
+(실제 결혼식 당일, 웨딩홀 앞에서 플레이할 수 있도록 배치)
 
 ![방명록2D](https://github.com/YoonStone/GuestBook_2D/assets/101027984/417d3ff3-384d-411b-a888-11d6315b6c36)
 
